@@ -1,0 +1,46 @@
+@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_DOC && requestCode == RESULT_OK) {
+            returnUri = data.getData();
+            attachments.setText(returnUri.toString());
+            
+            dumpImageMetaData(returnUri);
+        }
+    }
+
+
+    public void dumpImageMetaData(Uri uri) {
+
+        Cursor cursor = getActivity().getContentResolver()
+                .query(uri, null, null, null, null, null);
+
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+
+                // Note it's called "Display Name".  This is
+                // provider-specific, and might not necessarily be the file name.
+                String displayName = cursor.getString(
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                Log.i(TAGG, "Display Name: " + displayName);
+
+
+              
+
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+               
+                String size = null;
+                if (!cursor.isNull(sizeIndex)) {
+                    // Technically the column stores an int, but cursor.getString()
+                    // will do the conversion automatically.
+                    size = cursor.getString(sizeIndex);
+                } else {
+                    size = "Unknown";
+                }
+                Log.i(TAGG, "Size: " + size);
+                Toast.makeText(getActivity(), size + displayName + "", Toast.LENGTH_LONG).show();
+            }
+        } finally {
+            cursor.close();
+        }
+    }
