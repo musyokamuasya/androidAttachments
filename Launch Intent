@@ -1,0 +1,25 @@
+ private void browseDocuments() {
+        String[] mimetypes = {
+                "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "text/plain",
+                "application/pdf"
+
+        };
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.setType(mimetypes.length == 1 ? mimetypes[0] : "*/*");
+           if (mimetypes.length > 0) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+            } else {
+                String mimeTypeStr = "";
+                for (String mimeType : mimetypes) {
+                    mimeTypeStr += mimeType + "|";
+                }
+                intent.setType(mimeTypeStr.substring(0, mimeTypeStr.length()));
+            }
+            startActivityForResult(Intent.createChooser(intent, "Choose File"), REQUEST_CODE_DOC);
+        }
+    }
